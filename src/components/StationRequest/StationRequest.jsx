@@ -12,14 +12,27 @@
 //   - Resultat de la requête
 
 import axios from "axios";
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 //   - L'erreur de la requête
 const StationRequest = ({stationToFind}) => {
+    
+    const [searchResult, setSearchResult] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
 
     // Effet dans lequel on réalise la requete
     // Attention, celui doit ppetre limité au nom de la station
     useEffect(()=> {
+            
+        //? Mise à jour des states avant d'envoyer la requete 
+        //Tout est a valeur initial sauf le loading
+
+        setSearchResult(null);
+        setError(false);
+        setLoading(true);
+
         // Exemple de requete : https://api.irail.be/v1/liveboard/?station=Hourpes&format=json&lang=fr
         axios.get('https://api.irail.be/v1/liveboard/', {
             params: {
@@ -28,7 +41,11 @@ const StationRequest = ({stationToFind}) => {
                 format:'json'
             }
     }).then(({data}) => {
+
+        //? Données brutes recues depuis la webAPI
         console.log(data);
+
+        //! converti les données dans un format adapté à nos besoins
         const result = {
                         stationName: data.station,
                         updateTime: new Date(data.timestamp * 1000),
@@ -43,15 +60,36 @@ const StationRequest = ({stationToFind}) => {
                             })
                         )
                     }
+
+                    //? Données converties
                     console.log(result);
-    });
+
+                    //! Mise a jour du state apres la requete
+                    setLoading(false);
+                    setSearchResult(result);
+
+    }).catch(err => {
+
+        //! Mise à jour du state 
+        setLoading(false);
+        setError(true);
+    })
 
     },[stationToFind]);
 
     return (
         <div>
             <div>
-jhvhgjgvhbjgv
+                {isLoading ? (
+                <p>Chargement ...</p>
+                ) : searchResult ? (
+                    <p> Resultat : {searchResult.departuresCount} départs possibles</p>
+                ) : error ? (
+                    <p>Erreur lors de la requête</p>
+                ) : (
+                    <p>Aucune donnée... </p>
+                )
+            }
             </div>
         </div>
     )
