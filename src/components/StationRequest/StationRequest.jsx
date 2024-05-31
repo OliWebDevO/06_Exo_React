@@ -1,3 +1,6 @@
+
+import axios from "axios";
+import { useEffect, useState } from "react"
 //! Axios est une librairie qui permet de réaliser des requete ajax
 //? Exemple :
 //  axios.get('noure.be/demo?limit=42').then(({data}) => ...);
@@ -11,8 +14,29 @@
 //   - Chargement ...
 //   - Resultat de la requête
 
-import axios from "axios";
-import { useEffect, useState } from "react"
+const DashBoardItem = ({stationName, time, delay, platform}) => {
+    return (
+        <li>
+            Gare : {stationName} // Sur le quai : {platform}
+            <br />
+            // heure d'arrivé : {time.toLocaleDateString()} {delay > 0 && `+${delay}`} à la date du {time.toLocaleDateString()} // Retard : {delay}
+
+        </li>
+    )
+}
+
+
+const DashBoard = ({stationName, updateTime, departuresCount, departures}) => {
+    return (
+        <>
+        <p>Il y a {departuresCount} trains au départ de {stationName}</p>
+        <p>liste des départs :</p>
+        <ul>
+            {departures.map(dep => <DashBoardItem key ={dep.id} {...dep}/>)}
+        </ul>
+        </>
+    )
+}
 
 //   - L'erreur de la requête
 const StationRequest = ({stationToFind}) => {
@@ -83,7 +107,7 @@ const StationRequest = ({stationToFind}) => {
                 {isLoading ? (
                 <p>Chargement ...</p>
                 ) : searchResult ? (
-                    <p> Resultat : {searchResult.departuresCount} départs possibles</p>
+                    <DashBoard {...searchResult}/>
                 ) : error ? (
                     <p>Erreur lors de la requête</p>
                 ) : (
