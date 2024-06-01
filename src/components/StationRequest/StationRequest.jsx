@@ -17,10 +17,9 @@ import { useEffect, useState } from "react"
 const DashBoardItem = ({stationName, time, delay, platform}) => {
     return (
         <li>
-            Gare : {stationName} // Sur le quai : {platform}
+            Gare : {stationName} // Quai : {platform}
             <br />
-            // heure d'arrivé : {time.toLocaleDateString()} {delay > 0 && `+${delay}`} à la date du {time.toLocaleDateString()} // Retard : {delay}
-
+            // Arrivé : {time.toLocaleTimeString()} {delay > 0 && `+${delay}`} à la date du {time.toLocaleDateString()} {delay > 0 && "Retard : " + delay + " minutes"}
         </li>
     )
 }
